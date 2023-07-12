@@ -125,4 +125,108 @@ createMemu({
     body: 'Bar',
     buttonText: 'Baz',
     cancellable: true
-}); 
+});
+
+// 함수는 하나의 행동만 해야한다
+// 이것은 소프트웨어 엔지니어링에서 가장 중요한 규칙.
+// 함수가 1개 이상의 행동을 한다면 작성하는 것도, 테스트하는 것도, 이해하는 것도 어려워진다.
+// 하나의 함수에 하나의 행동을 정의하는 것이 가능하다면 함수는 고치기 쉬워지고
+// 읽기 쉬워진다.
+
+// X
+
+function emailClients(clients) {
+    clients.forEach(client => {
+        const clientRecord = database.lookup(client);
+        if (clientRecord.isActive()) {
+            email(clinet);
+        }
+    });
+}
+
+// 좋은 예시
+
+function emailClients(clients) {
+    clients
+        .filter(isClientActive)
+        .forEach(email);
+}
+
+function isClientActive(client) {
+    const clientRecord = database.lookup(client);
+    return clientRecord.isActive();
+}
+
+// 함수명은 함수가 무엇을 하는 지 알 수 있어야 합니다.
+// 안좋은 예
+
+function AddToDate(date,month) {
+    // ..
+}
+
+const date = new Date ();
+// 뭘 추가하는 건지 이름만 보고 알아내기 힘들다.
+
+AddToDate(date,1);
+
+// O
+
+function AddMonthToDate(date, month) {
+    //...
+}
+
+const date = new Date();
+AddMonthToDate(date,1);
+
+//함수는 단일 행동을 추상화 해야한다.
+
+// 추상화된 이름이 여러 의미를 내포하고 있다면 그 함수는 너무 많을 하게끔 설계된 것.
+// 함수들을 나누어서 재사용 가능하고 테스트하기 쉽게 만들어야 한다.
+
+// X
+function parseBetterJSAlternative(code) {
+    const REGEXES = [
+    ];
+
+    const statements = code.split('');
+    const tokens = [];
+    REGEXES.forEach(REGEX => {
+    statements.forEach(statement => {
+      //...
+    });
+});
+}
+
+//O
+
+function tokenize(code) {
+    const REGEXES = [
+        //..
+    ];
+    const statements = code.split('');
+    const tokens = [];
+    REGEXES.forEach(REGEX => {
+        statements.forEach(statement => {
+            tokens.puch(/*.....*/);
+        });
+    });
+
+    return tokens;
+}
+
+function lexer(token) {
+    const ast = [];
+    tokens.forEach(token => {
+        ast.push(/*...*/);
+    });
+
+    return ast;
+}
+
+function parseBetterJSAlternative(code) {
+    const tokens = tokenize(code);
+    const ast = lexer(tokens);
+    ast.forEach(node => {
+        // parse...
+    });
+}
